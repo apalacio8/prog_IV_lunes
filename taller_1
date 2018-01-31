@@ -1,0 +1,48 @@
+import sqlite3
+import hashlib
+
+#db = sqlite3.connect(':memory:') # Base de datos en memoria
+
+def cifrar_password(password):
+    cifrado = hashlib.sha512(password.encode('utf-8')).hexdigest()
+    return cifrado
+
+db = sqlite3.connect('data/tabla') # Base de datos en un archivo
+db.create_function('cifrar', 1, cifrar_password)
+cursor = db.cursor()
+#cursor.execute('''CREATE TABLE libro(id INTEGER PRIMARY KEY,
+                   #autor TEXT,  publicacion INT, cantidad INT, isbn INT)''')
+
+
+id = input("id: ")
+autor = input("autor: ")
+publicacion = input("publicacion")
+cantidad = input("cantidad")
+isbn = input("isbn")
+cursor.execute('''INSERT INTO libro(id,autor,publicacion,cantidad,isbn) VALUES 
+                  (?,?,?,?,?)''', (id,autor,publicacion,cantidad,isbn))
+db.commit()
+db.close()
+
+id = input("ID de usuario a eliminar: ")
+
+for id in cursor:
+    cursor = db.cursor()
+if int(id) == int(id[0]):
+              cursor.execute('''DELETE FROM libro WHERE id = ?, autor=?, publicacion=?, cantidad=?, isbn=?''',
+                       (id,))
+db.commit()
+db.close()
+
+# id = input("ID de usuario a modificar: ")
+#
+# for fila in cursor:
+#     cursor = db.cursor()
+#     if int(fila) == int(fila[0]):
+#         nuevo_nombre = input("Nombre Nuevo: ")
+#         cursor.execute('''UPDATE libro SET nombre = ? WHERE
+#                           id = ?''', (nuevo_nombre, id))
+#
+#
+# db.commit()
+# db.close()
